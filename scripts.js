@@ -175,25 +175,16 @@ function checkFile(input, errorId) {
 }
 
 function giNextFileCheck(event) {
-    // Prevent default form submission behavior
     event.preventDefault();
-
-    // Check if all options are selected
     if (q1.selectedIndex === 0 || q2.selectedIndex === 0 || q3.selectedIndex === 0) {
         alert("Select the document type.");
         return; // Stop further execution
     }
-
-    // Check if all files are attached
     if (!fileInput1.files[0]) {
         alert("Please attach all files.");
         return; // Stop further execution
     }
-    
-    // Display the "Water Supply" section
     document.getElementById('ws').style.display = 'block';
-
-    // Find the corresponding scroll button for "Water Supply" and trigger its click event
     var wsButton = document.getElementById('b2'); // Assuming the id of the button for "Water Supply" is 'b2'
     if (wsButton) {
         wsButton.click(); // Trigger the click event
@@ -201,25 +192,16 @@ function giNextFileCheck(event) {
 }
 
 function wsNextFileCheck(event) {
-    // Prevent default form submission behavior
     event.preventDefault();
-
-    // Check if all options are selected
     if (q4.selectedIndex === 0) {
         alert("Select the document type.");
         return; // Stop further execution
     }
-
-    // Check if all files are attached
     if (!fileInput4.files[0]) {
         alert("Please attach all files.");
         return; // Stop further execution
     }
-    
-    // Display the "SD" section
     document.getElementById('sd').style.display = 'block';
-
-    // Find the corresponding scroll button for "SD" and trigger its click event
     var sdButton = document.getElementById('b3'); // Assuming the id of the button for "sd" is 'b3'
     if (sdButton) {
         sdButton.click(); // Trigger the click event
@@ -227,15 +209,18 @@ function wsNextFileCheck(event) {
 }
 
 function sdNextFileCheck(event) {
-    // Prevent default form submission behavior
     event.preventDefault();
-
-   
-    // Display the "SD" section
     document.getElementById('swm').style.display = 'block';
+    var sdButton = document.getElementById('b4'); // Assuming the id of the button for "swm" is 'b4'
+    if (sdButton) {
+        sdButton.click(); // Trigger the click event
+    }
+}
 
-    // Find the corresponding scroll button for "SD" and trigger its click event
-    var sdButton = document.getElementById('b4'); // Assuming the id of the button for "sd" is 'b4'
+function swmNextFileCheck(event) {
+    event.preventDefault();
+    document.getElementById('ut').style.display = 'block';
+    var sdButton = document.getElementById('b5'); // Assuming the id of the button for "ut" is 'b4'
     if (sdButton) {
         sdButton.click(); // Trigger the click event
     }
@@ -255,7 +240,28 @@ function captureAndSendFormData(url) {
         document.getElementById("fileInput7"),
         document.getElementById("fileInput8"),
         document.getElementById("fileInput9"),
-        document.getElementById("fileInput10")
+        document.getElementById("fileInput10"),
+        document.getElementById("fileInput11"),
+        document.getElementById("fileInput12"),
+        document.getElementById("fileInput13"),
+        document.getElementById("fileInput14"),
+        document.getElementById("fileInput15"),
+        document.getElementById("fileInput16"),
+        document.getElementById("fileInput17"),
+        document.getElementById("fileInput18"),
+        document.getElementById("fileInput19"),
+        document.getElementById("fileInput20"),
+        document.getElementById("fileInput21"),
+        document.getElementById("fileInput22"),
+        document.getElementById("fileInput23"),
+        document.getElementById("fileInput24"),
+        document.getElementById("fileInput25"),
+        document.getElementById("fileInput26"),
+        document.getElementById("fileInput27"),
+        document.getElementById("fileInput28"),
+        document.getElementById("fileInput29"),
+        document.getElementById("fileInput30"),
+        document.getElementById("fileInput31")
     ];
     
     // Get the selected files
@@ -273,6 +279,29 @@ function captureAndSendFormData(url) {
     formData.append("q8", document.getElementById("q8").value);
     formData.append("q9", document.getElementById("q9").value);
     formData.append("q10", document.getElementById("q10").value);
+    formData.append("q10", document.getElementById("q10").value);
+    formData.append("q11", document.getElementById("q11").value);
+    formData.append("q12", document.getElementById("q12").value);
+    formData.append("q13", document.getElementById("q13").value);
+    formData.append("q14", document.getElementById("q14").value);
+    formData.append("q15", document.getElementById("q15").value);
+    formData.append("q16", document.getElementById("q16").value);
+    formData.append("q17", document.getElementById("q17").value);
+    formData.append("q18", document.getElementById("q18").value);
+    formData.append("q19", document.getElementById("q19").value);
+    formData.append("q20", document.getElementById("q20").value);
+    formData.append("q21", document.getElementById("q21").value);
+    formData.append("q22", document.getElementById("q22").value);
+    formData.append("q23", document.getElementById("q23").value);
+    formData.append("q24", document.getElementById("q24").value);
+    formData.append("q25", document.getElementById("q25").value);
+    formData.append("q26", document.getElementById("q26").value);
+    formData.append("q27", document.getElementById("q27").value);
+    formData.append("q28", document.getElementById("q28").value);
+    formData.append("q29", document.getElementById("q29").value);
+    formData.append("q30", document.getElementById("q30").value);
+    formData.append("q31", document.getElementById("q31").value);
+
 
     // Function to handle the form submission after reading all files
     function sendFormData() {
