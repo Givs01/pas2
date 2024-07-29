@@ -254,6 +254,7 @@ body {
         .required {
             color: red; /* You can adjust the color as per your design */
         }
+        
 
 /* Popup styles */
 .popup {
@@ -318,3 +319,17 @@ body {
     
 }
 
+/* Style for the required span */
+span.required {
+    color: red;
+}
+
+/* Additional styling to ensure consistency and visibility */
+.f-error {
+    color: red;
+}
+
+/* Optional: Styling for select options (This will only apply to non-standard elements as <option> styling is limited) */
+option span.required {
+    color: red;
+}

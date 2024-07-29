@@ -16,7 +16,11 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         scrollToBottom('b1'); // Default to 'gi' button if no active button is stored
     }
+
+    // Load draft files from sessionStorage
+    loadDraftFiles();
 });
+
 
 function scrollToBottom(buttonId) {
     var buttons = document.getElementsByClassName('scroll-btn');
@@ -26,7 +30,7 @@ function scrollToBottom(buttonId) {
     
     // Show/hide forms based on the button clicked
     var formIds = ['gi', 'ws', 'sd', 'swm', 'ut'];
-    var headings = ['General Information', 'Water Supply', 'Sewerage and Drainage','Solid Waste Management', 'ULBs Undertaking']; // Update with your heading texts
+    var headings = ['General Information', 'Water Supply', 'Sewerage and Drainage', 'Solid Waste Management', 'ULBs Undertaking']; // Update with your heading texts
     for (var i = 0; i < formIds.length; i++) {
         var form = document.getElementById(formIds[i]);
         if (buttonId === 'b' + (i + 1)) {
@@ -43,6 +47,8 @@ function scrollToBottom(buttonId) {
 
 let inactivityTimeout;
 let logoutTimeout;
+
+
 
 function login() {
     document.getElementById('errorMsg').style.display = 'none';
@@ -83,6 +89,7 @@ function logout() {
     sessionStorage.clear();
     showLoggedOutState();
 }
+
 
 function showLoggedInState(username) {
     console.log(`User ${username} is logged in`);
@@ -148,14 +155,6 @@ function resetInactivityTimer() {
 
 
 
-
-
-
-
-
-
-
-
 function closePopup() {
     var popup = document.getElementById("success-popup");
     popup.style.display = "none";
@@ -184,6 +183,7 @@ function giNextFileCheck(event) {
         alert("Please attach all files.");
         return; // Stop further execution
     }
+    saveDraft(); // Save the draft before navigating
     document.getElementById('ws').style.display = 'block';
     var wsButton = document.getElementById('b2'); // Assuming the id of the button for "Water Supply" is 'b2'
     if (wsButton) {
@@ -201,6 +201,7 @@ function wsNextFileCheck(event) {
         alert("Please attach all files.");
         return; // Stop further execution
     }
+    saveDraft(); // Save the draft before navigating
     document.getElementById('sd').style.display = 'block';
     var sdButton = document.getElementById('b3'); // Assuming the id of the button for "sd" is 'b3'
     if (sdButton) {
@@ -210,21 +211,119 @@ function wsNextFileCheck(event) {
 
 function sdNextFileCheck(event) {
     event.preventDefault();
+    saveDraft(); // Save the draft before navigating
     document.getElementById('swm').style.display = 'block';
-    var sdButton = document.getElementById('b4'); // Assuming the id of the button for "swm" is 'b4'
-    if (sdButton) {
-        sdButton.click(); // Trigger the click event
+    var swmButton = document.getElementById('b4'); // Assuming the id of the button for "Solid Waste Management" is 'b4'
+    if (swmButton) {
+        swmButton.click(); // Trigger the click event
     }
 }
 
 function swmNextFileCheck(event) {
     event.preventDefault();
+    saveDraft(); // Save the draft before navigating
     document.getElementById('ut').style.display = 'block';
-    var sdButton = document.getElementById('b5'); // Assuming the id of the button for "ut" is 'b4'
-    if (sdButton) {
-        sdButton.click(); // Trigger the click event
+    var utButton = document.getElementById('b5'); // Assuming the id of the button for "ULBs Undertaking" is 'b5'
+    if (utButton) {
+        utButton.click(); // Trigger the click event
     }
 }
+
+function saveDraft() {
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        const formData = new FormData(form);
+        const formId = form.id;
+        let draftData = {};
+
+        formData.forEach((value, key) => {
+            if (value instanceof File) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    draftData[key] = {
+                        name: value.name,
+                        data: e.target.result
+                    };
+                    sessionStorage.setItem(formId, JSON.stringify(draftData));
+                };
+                reader.readAsDataURL(value);
+            } else {
+                draftData[key] = value;
+            }
+        });
+    });
+}
+
+// Save draft on form change
+document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('change', saveDraft);
+});
+
+function loadDraftFiles() {
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        const formId = form.id;
+        const draftData = JSON.parse(sessionStorage.getItem(formId));
+        if (draftData) {
+            Object.keys(draftData).forEach(key => {
+                const input = form.querySelector(`[name="${key}"]`);
+                if (input && input.type === 'file') {
+                    const fileData = draftData[key];
+                    const blob = dataURLtoBlob(fileData);
+                    const file = new File([blob], 'draftFile'); // Default file name
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    input.files = dataTransfer.files;
+                } else if (input) {
+                    input.value = draftData[key];
+                }
+            });
+        }
+    });
+}
+
+
+
+function dataURLtoBlob(dataURL) {
+    const [header, data] = dataURL.split(',');
+    const mime = header.match(/:(.*?);/)[1];
+    const binary = atob(data);
+    const array = [];
+    for (let i = 0; i < binary.length; i++) {
+        array.push(binary.charCodeAt(i));
+    }
+    return new Blob([new Uint8Array(array)], { type: mime });
+}
+
+function loadDraftFiles() {
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        const formId = form.id;
+        const draftData = JSON.parse(sessionStorage.getItem(formId));
+        if (draftData) {
+            Object.keys(draftData).forEach(key => {
+                const input = form.querySelector(`[name="${key}"]`);
+                if (input && input.type === 'file') {
+                    const fileInfo = draftData[key];
+                    if (fileInfo && fileInfo.data) {
+                        const blob = dataURLtoBlob(fileInfo.data);
+                        const file = new File([blob], fileInfo.name);
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        input.files = dataTransfer.files;
+                    }
+                } else if (input) {
+                    input.value = draftData[key];
+                }
+            });
+        }
+    });
+}
+
+// Restore drafts when the page is loaded
+document.addEventListener('DOMContentLoaded', loadDraftFiles);
+
+
 
 function captureAndSendFormData(url) {
     var formData = new FormData();
@@ -326,6 +425,7 @@ function captureAndSendFormData(url) {
             const forms = document.querySelectorAll("form");
             forms.forEach(form => form.reset());
             button.classList.remove("gray-button");
+            sessionStorage.clear();
         })
         .catch(error => {
             console.error('Error:', error);
